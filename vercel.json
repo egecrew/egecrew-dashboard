@@ -1,12 +1,4 @@
 {
-  "build": {
-    "env": {
-      "NEO4J_URI": "@neo4j-uri",
-      "NEO4J_USERNAME": "@neo4j-username", 
-      "NEO4J_PASSWORD": "@neo4j-password",
-      "RESEND_API_KEY": "@resend-api-key"
-    }
-  },
   "functions": {
     "api/submit-survey.js": {
       "maxDuration": 10
