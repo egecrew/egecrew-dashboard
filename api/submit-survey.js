@@ -1,12 +1,14 @@
 // Vercel serverless function for survey submission
 import neo4j from 'neo4j-driver';
 
+// Temporary hardcoded credentials - move to env vars later
+const NEO4J_URI = process.env.NEO4J_URI || 'neo4j+s://e6699861.databases.neo4j.io';
+const NEO4J_USERNAME = process.env.NEO4J_USERNAME || 'neo4j';
+const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || '9bLT5X5ngPZ9L18lYxixNKg3IWz5trA42nH1lr5zq00';
+
 const driver = neo4j.driver(
-  process.env.NEO4J_URI,
-  neo4j.auth.basic(
-    process.env.NEO4J_USERNAME,
-    process.env.NEO4J_PASSWORD
-  )
+  NEO4J_URI,
+  neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD)
 );
 
 export default async function handler(req, res) {
@@ -84,7 +86,7 @@ export default async function handler(req, res) {
 
 async function sendNotificationEmail(business, survey) {
   // Send notification to team using Resend
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_QDwCnFrq_Me895AvLSNeeoDi6pyK1XoMW';
   
   const emailContent = `
     <h2>🔥 New Hot Lead!</h2>
