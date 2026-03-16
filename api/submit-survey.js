@@ -8,7 +8,10 @@ const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || '9bLT5X5ngPZ9L18lYxixNKg3IW
 
 const driver = neo4j.driver(
   NEO4J_URI,
-  neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD)
+  neo4j.auth.basic(NEO4J_USERNAME, NEO4J_PASSWORD),
+  {
+    database: 'neo4j' // Use default database
+  }
 );
 
 export default async function handler(req, res) {
@@ -25,10 +28,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   
+  // Debug logging
+  console.log('Neo4j connection info:', {
+    uri: NEO4J_URI,
+    username: NEO4J_USERNAME,
+    hasPassword: !!NEO4J_PASSWORD
+  });
+  
   try {
     const { survey, submittedAt, ...businessData } = req.body;
     
-    const session = driver.session();
+    const session = driver.session({ database: 'neo4j' });
     
     // Update business with survey response
     const result = await session.run(`
