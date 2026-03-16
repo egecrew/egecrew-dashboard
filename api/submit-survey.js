@@ -1,15 +1,15 @@
 // Vercel serverless function for survey submission
-import { GraphDatabase } from 'neo4j-driver';
+const neo4j = require('neo4j-driver');
 
-const driver = GraphDatabase.driver(
-  process.env.NEO4J_URI || 'neo4j+s://e6699861.databases.neo4j.io',
-  GraphDatabase.auth.basic(
-    process.env.NEO4J_USERNAME || 'e6699861',
-    process.env.NEO4J_PASSWORD || '9bLT5X5ngPZ9L18lYxixNKg3IWz5trA42nH1lr5zq00'
+const driver = neo4j.driver(
+  process.env.NEO4J_URI,
+  neo4j.auth.basic(
+    process.env.NEO4J_USERNAME,
+    process.env.NEO4J_PASSWORD
   )
 );
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -58,7 +58,10 @@ export default async function handler(req, res) {
     
     await session.close();
     
-    // Send notification email
+    // Log success
+    console.log('Survey submitted for:', businessData.name);
+    
+    // Send notification email if hot lead
     if (survey.wantsWebsite === 'yes' || survey.wantsAgent === 'yes') {
       await sendNotificationEmail(businessData, survey);
     }
@@ -66,21 +69,22 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Survey submitted successfully',
-      leadStatus: result.records[0]?.get('status')
+      leadStatus: result.records[0]?.get('status') || 'updated'
     });
     
   } catch (error) {
     console.error('Error submitting survey:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to submit survey'
+      error: 'Failed to submit survey',
+      details: error.message
     });
   }
-}
+};
 
 async function sendNotificationEmail(business, survey) {
   // Send notification to team using Resend
-  const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_QDwCnFrq_Me895AvLSNeeoDi6pyK1XoMW';
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
   
   const emailContent = `
     <h2>🔥 New Hot Lead!</h2>
