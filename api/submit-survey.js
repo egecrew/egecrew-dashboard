@@ -1,5 +1,5 @@
 // Vercel serverless function for survey submission
-const neo4j = require('neo4j-driver');
+import neo4j from 'neo4j-driver';
 
 const driver = neo4j.driver(
   process.env.NEO4J_URI,
@@ -9,7 +9,7 @@ const driver = neo4j.driver(
   )
 );
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -80,7 +80,7 @@ module.exports = async (req, res) => {
       details: error.message
     });
   }
-};
+}
 
 async function sendNotificationEmail(business, survey) {
   // Send notification to team using Resend
