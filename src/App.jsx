@@ -66,7 +66,7 @@ function App() {
     // For now, just show success
     setSubmitted(true)
     
-    // Also send to Resend for notification
+    // Send to API
     try {
       const response = await fetch('/api/submit-survey', {
         method: 'POST',
@@ -75,10 +75,19 @@ function App() {
       })
       
       if (response.ok) {
-        console.log('Survey sent successfully')
+        const result = await response.json()
+        console.log('Survey submitted:', result)
+        
+        // Store lead status
+        if (result.leadStatus) {
+          localStorage.setItem('leadStatus', result.leadStatus)
+        }
+      } else {
+        console.error('Survey submission failed')
       }
     } catch (error) {
       console.error('Error sending survey:', error)
+      // Still show success to user even if API fails
     }
   }
 
