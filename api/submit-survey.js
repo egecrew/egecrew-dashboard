@@ -3,7 +3,7 @@ import neo4j from 'neo4j-driver';
 
 // Temporary hardcoded credentials - move to env vars later
 const NEO4J_URI = process.env.NEO4J_URI || 'neo4j+s://e6699861.databases.neo4j.io';
-const NEO4J_USERNAME = process.env.NEO4J_USERNAME || 'neo4j';
+const NEO4J_USERNAME = process.env.NEO4J_USERNAME || 'e6699861';
 const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || '9bLT5X5ngPZ9L18lYxixNKg3IWz5trA42nH1lr5zq00';
 
 const driver = neo4j.driver(
